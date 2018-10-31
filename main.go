@@ -12,29 +12,29 @@ import (
 )
 
 type Engineer struct {
-	ID           uint    `json:"id"`
-	Name         string  `json:"name"`
-	ImgURL       string  `json:"imgUrl"`
-	Title        string  `json:"title"`
-	Department   string  `json:"department"`
-	HourlyWage   float32 `json:"hourlyWage"`
-	HoursPerWeek float32 `json:"hoursPerWeek"`
-	StartDate    string  `json:"startDate"`
-	EndDate      string  `json:"endDate"`
-	AuthID       string  `json:"auth_id"`
+	ID           uint   `json:"id"`
+	Name         string `json:"name"`
+	ImgURL       string `json:"imgUrl"`
+	Title        string `json:"title"`
+	Department   string `json:"department"`
+	HourlyWage   int    `json:"hourlyWage"`
+	HoursPerWeek int    `json:"hoursPerWeek"`
+	StartDate    string `json:"startDate"`
+	EndDate      string `json:"endDate"`
+	AuthID       string `json:"auth_id"`
 }
 
 type Project struct {
-	ID            uint    `json:"id"`
-	ProjectName   string  `json:"projectName"`
-	Client        string  `json:"client"`
-	LogoClient    string  `json:"logoClient"`
-	Revenue       float32 `json:"revenue"`
-	FrontendHours float32 `json:"frontendHours"`
-	BackendHours  float32 `json:"backendHours"`
-	StartDate     string  `json:"startDate"`
-	EndDate       string  `json:"endDate"`
-	AuthID        string  `json:"auth_id"`
+	ID            uint   `json:"id"`
+	ProjectName   string `json:"projectName"`
+	Client        string `json:"client"`
+	LogoClient    string `json:"logoClient"`
+	Revenue       int    `json:"revenue"`
+	FrontendHours int    `json:"frontendHours"`
+	BackendHours  int    `json:"backendHours"`
+	StartDate     string `json:"startDate"`
+	EndDate       string `json:"endDate"`
+	AuthID        string `json:"auth_id"`
 }
 
 var db *gorm.DB
@@ -123,10 +123,36 @@ func UpdateProject(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateEngineer(w http.ResponseWriter, r *http.Request) {
+
 	var engineer Engineer
 	json.NewDecoder(r.Body).Decode(&engineer)
 	db.Create(&engineer)
 	json.NewEncoder(w).Encode(&engineer)
+
+	// b, err := ioutil.ReadAll(r.Body)
+	// log.Println("Request Body:", string(b))
+	// if err != nil {
+	// 	http.Error(w, err.Error(), 500)
+	// 	return
+	// }
+
+	// var engineer Engineer
+	// err = json.Unmarshal(b, &engineer)
+	// if err != nil {
+	// 	http.Error(w, err.Error(), 500)
+	// 	return
+	// }
+
+	// db.Create(&engineer)
+
+	// output, err := json.Marshal(engineer)
+	// if err != nil {
+	// 	http.Error(w, err.Error(), 500)
+	// 	return
+	// }
+	// w.Header().Set("content-type", "application/json")
+	// w.Write(output)
+
 }
 
 func CreateProject(w http.ResponseWriter, r *http.Request) {
