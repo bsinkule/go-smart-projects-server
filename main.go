@@ -48,10 +48,6 @@ func main() {
 
 	db, err = gorm.Open(
 		"postgres",
-		// "host="+os.Getenv("localhost")+" user="+os.Getenv("bsinkule")+
-		// 	" dbname="+os.Getenv("spittle")+" sslmode=disable")
-
-		// os.ExpandEnv("host=${localhost} user=${bsinkule} dbname=${spittle} sslmode=disable"))
 		"host=localhost user=bsinkule dbname=sp-go sslmode=disable")
 
 	if err != nil {
@@ -75,11 +71,7 @@ func main() {
 	router.HandleFunc("/projects/{id}", DeleteProject).Methods("DELETE")
 	router.HandleFunc("/projects/{id}", UpdateProject).Methods("PUT")
 
-	// handler := cors.Default().Handler(router)
-
-	// log.Fatal(http.ListenAndServe(":"+os.ExpandEnv("path=${5432}"), handler))
 	log.Fatal(http.ListenAndServe(":5000", handlers.CORS(headers, methods, origins)(router)))
-	// log.Fatal(http.ListenAndServe(":5000", router))
 }
 
 func GetEngineers(w http.ResponseWriter, r *http.Request) {

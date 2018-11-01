@@ -1,0 +1,20 @@
+{
+  "name": "go-smart-projects-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bsinkule/go-smart-projects-server.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bsinkule/go-smart-projects-server/issues"
+  },
+  "homepage": "https://github.com/bsinkule/go-smart-projects-server#readme"
+}
