@@ -73,7 +73,7 @@ func main() {
 	router.HandleFunc("/projects/{id}", DeleteProject).Methods("DELETE")
 	router.HandleFunc("/projects/{id}", UpdateProject).Methods("PUT")
 
-	log.Fatal(http.ListenAndServe(":5000", handlers.CORS(headers, methods, origins)(router)))
+	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), handlers.CORS(headers, methods, origins)(router)))
 	// log.Fatal(http.ListenAndServe(":5000", handlers.CORS(headers, methods, origins)(router)))
 }
 
