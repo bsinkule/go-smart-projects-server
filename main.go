@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
@@ -46,9 +47,10 @@ func main() {
 	methods := handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE"})
 	origins := handlers.AllowedOrigins([]string{"*"})
 
+	db_url := os.Getenv("postgres://vybfvghyuljcqb:f1f007fe9a3b90c0d83670d3e045a010beee244bd692ecb15969f9229044f909@ec2-107-21-93-132.compute-1.amazonaws.com:5432/ddpg8p2ffnbm2b")
 	db, err = gorm.Open(
-		"postgres",
-		"host=localhost user=bsinkule dbname=sp-go sslmode=disable")
+		"postgres", db_url)
+	// "host=localhost user=bsinkule dbname=sp-go sslmode=disable")
 
 	if err != nil {
 		panic("failed to connect database")
