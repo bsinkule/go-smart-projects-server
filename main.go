@@ -47,9 +47,10 @@ func main() {
 	methods := handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE"})
 	origins := handlers.AllowedOrigins([]string{"*"})
 
-	db_url := os.Getenv("postgres://vybfvghyuljcqb:f1f007fe9a3b90c0d83670d3e045a010beee244bd692ecb15969f9229044f909@ec2-107-21-93-132.compute-1.amazonaws.com:5432/ddpg8p2ffnbm2b")
+	DB_URL := "host=localhost user=bsinkule dbname=sp-go sslmode=disable"
+	dbURL := os.Getenv(DB_URL)
 	db, err = gorm.Open(
-		"postgres", db_url)
+		"postgres", dbURL)
 	// "host=localhost user=bsinkule dbname=sp-go sslmode=disable")
 
 	if err != nil {
@@ -74,6 +75,7 @@ func main() {
 	router.HandleFunc("/projects/{id}", UpdateProject).Methods("PUT")
 
 	log.Fatal(http.ListenAndServe(":5000", handlers.CORS(headers, methods, origins)(router)))
+	// log.Fatal(http.ListenAndServe(":5000", handlers.CORS(headers, methods, origins)(router)))
 }
 
 func GetEngineers(w http.ResponseWriter, r *http.Request) {
