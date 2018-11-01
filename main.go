@@ -5,10 +5,10 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	"github.com/rs/cors"
 )
 
 type Engineer struct {
@@ -42,6 +42,9 @@ var err error
 
 func main() {
 	router := mux.NewRouter()
+	headers := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"})
+	methods := handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE"})
+	origins := handlers.AllowedOrigins([]string{"*"})
 
 	db, err = gorm.Open(
 		"postgres",
@@ -72,10 +75,11 @@ func main() {
 	router.HandleFunc("/projects/{id}", DeleteProject).Methods("DELETE")
 	router.HandleFunc("/projects/{id}", UpdateProject).Methods("PUT")
 
-	handler := cors.Default().Handler(router)
+	// handler := cors.Default().Handler(router)
 
 	// log.Fatal(http.ListenAndServe(":"+os.ExpandEnv("path=${5432}"), handler))
-	log.Fatal(http.ListenAndServe(":5000", handler))
+	log.Fatal(http.ListenAndServe(":5000", handlers.CORS(headers, methods, origins)(router)))
+	// log.Fatal(http.ListenAndServe(":5000", router))
 }
 
 func GetEngineers(w http.ResponseWriter, r *http.Request) {
@@ -105,6 +109,10 @@ func GetProject(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateEngineer(w http.ResponseWriter, r *http.Request) {
+	// if HandleCORS(w, r) {
+	// 	return
+	// }
+
 	params := mux.Vars(r)
 	var engineer Engineer
 	db.First(&engineer, params["id"])
@@ -124,17 +132,21 @@ func UpdateProject(w http.ResponseWriter, r *http.Request) {
 
 func CreateEngineer(w http.ResponseWriter, r *http.Request) {
 
-	var engineer Engineer
-	json.NewDecoder(r.Body).Decode(&engineer)
-	db.Create(&engineer)
-	json.NewEncoder(w).Encode(&engineer)
-
 	// b, err := ioutil.ReadAll(r.Body)
 	// log.Println("Request Body:", string(b))
 	// if err != nil {
 	// 	http.Error(w, err.Error(), 500)
 	// 	return
 	// }
+
+	// reader := bytes.NewReader(b)
+
+	var engineer Engineer
+	json.NewDecoder(r.Body).Decode(&engineer)
+	db.Create(&engineer)
+	json.NewEncoder(w).Encode(&engineer)
+
+	// log.Printf("engineers struct %+v \n", engineer)
 
 	// var engineer Engineer
 	// err = json.Unmarshal(b, &engineer)
@@ -183,3 +195,21 @@ func DeleteProject(w http.ResponseWriter, r *http.Request) {
 	db.Find(&projects)
 	json.NewEncoder(w).Encode(&projects)
 }
+
+// // HandleCORS adds CORS headers if a CORS request was made
+// // Read more here: http://www.html5rocks.com/en/tutorials/cors/
+// func HandleCORS(w http.ResponseWriter, r *http.Request) bool {
+// 	w.Header().Set("Access-Control-Allow-Origin", "*")
+// 	w.Header().Set("Access-Control-Allow-Methods", "PUT")
+// 	w.Header().Set("Access-Control-Allow-Headers", "Accept, Authorization")
+// 	w.Header().Set("Access-Control-Max-Age", "300") // In seconds - 5 mins
+
+// 	// Short-circuit pre-flight OPTIONS requests with a 200 success response
+// 	method := r.Header.Get("Access-Control-Request-Method")
+// 	if method != "" && r.Method == "OPTIONS" {
+// 		w.WriteHeader(200)
+// 		return true
+// 	}
+// 	// Do not short-circuit the response
+// 	return false
+// }
