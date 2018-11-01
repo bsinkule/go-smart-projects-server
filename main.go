@@ -47,8 +47,7 @@ func main() {
 	methods := handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE"})
 	origins := handlers.AllowedOrigins([]string{"*"})
 
-	DB_URL := "host=localhost user=bsinkule dbname=sp-go sslmode=disable"
-	dbURL := os.Getenv(DB_URL)
+	dbURL := os.Getenv("DB_URL")
 	db, err = gorm.Open(
 		"postgres", dbURL)
 	// "host=localhost user=bsinkule dbname=sp-go sslmode=disable")
